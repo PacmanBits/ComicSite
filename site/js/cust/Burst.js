@@ -1,16 +1,65 @@
 $(function()
 {
-	var minSpeed   = 0.5 ;
-	var maxSpeed   = 2   ;
-	var thetaRange = 5   ;
+	var canvSize = 1000;
 	
-	function MakeLayer(r, n, color, startingZ)
+	function MakeLayer(r, n, color, additionalClasses)//, startingZ)
 	{
-		var inR = r * Math.cos(Math.PI / n);
-		var polySide = 2 * r * Math.sin(Math.PI / n);
-		var s = Math.sqrt(polySide * polySide / 2);
+		var outR   = r * canvSize / 2                   ;
+		var polySide = 2 * outR * Math.sin(Math.PI / n) ;
+		var inR    = outR - polySide / 2                ; // TODO: the outR:inR ratio isn't correct.  The spikes should have a 90 degree angle in all cases
+		var period = 2 * Math.PI / n                    ;
+		var point  = period / 2                         ;
 		
-		var blast = $("<div>").addClass("blast").css({position : "absolute", zIndex : startingZ});
+		
+		
+		
+		
+		
+		
+		var blast  = $(document.createElement("canvas"))
+			.addClass("blast " + additionalClasses)
+			.css({
+				position : "absolute"    ,
+				width    : 2 * r + "em"  ,
+				height   : 2 * r + "em"  ,
+				top      : -1 * r + "em" ,
+				left     : -1 * r + "em"
+			})
+			.attr("width", canvSize)
+			.attr("height", canvSize)
+		;
+		var ctx    = blast[0].getContext("2d");
+		
+		var c = {
+			x : canvSize / 2,
+			y : canvSize / 2
+		}
+		
+		ctx.fillStyle     = color         ;
+		ctx.shadowColor   = '#000'        ;
+		ctx.shadowBlur    = canvSize / 20 ;
+		ctx.shadowOffsetX = 0             ;
+		ctx.shadowOffsetY = 0             ;
+		
+		ctx.beginPath();
+		ctx.moveTo(inR + c.x, 0 + c.y);
+		
+		for(var theta = 0; theta < 2 * Math.PI; theta += period)
+		{
+			ctx.lineTo( outR * Math.cos(theta + point) + c.x, outR * Math.sin(theta + point) + c.y);
+			ctx.lineTo( inR * Math.cos(theta + period) + c.x, inR * Math.sin(theta + period) + c.y);
+//			ctx.rect( outR * Math.cos(theta + point) + c.x - 2, outR * Math.sin(theta + point) + c.y - 2, 4, 4);
+//			ctx.rect( inR * Math.cos(theta + period) + c.x - 2, inR * Math.sin(theta + period) + c.y- 2, 4, 4);
+		}
+		
+		ctx.closePath();
+		ctx.fill();
+		
+		/*
+		var polySide = 2 * r * Math.sin(Math.PI / n);
+		var s        = Math.sqrt(polySide * polySide / 2);
+		
+		var blast = $("<div>").addClass("blast " + additionalClasses).css({position : "absolute", zIndex : startingZ});
 		
 		for(var p = 0; p < n; p++)
 		{
@@ -35,28 +84,6 @@ $(function()
 				boxShadow       : "0 0 0.2em 0.01em rgba(0,0,0,0.5)"
 			});
 		}
-	
-		var targetTheta = 2 * thetaRange * Math.random() - thetaRange              ;
-		var theta       = 0                                                        ;
-		var dir         = Math.sign(targetTheta)                                   ;
-		var speed       = ((maxSpeed - minSpeed) * Math.random() + minSpeed) * dir ;
-		
-		Framed.AddOnFrameHandler(function(dt)
-		{
-			if(dir * theta > dir * targetTheta)
-			{
-				targetTheta  = 2 * thetaRange * Math.random() - thetaRange;
-				
-				dir = Math.sign(targetTheta - theta);
-				
-				speed = ((maxSpeed - minSpeed) * Math.random() + minSpeed) * dir;
-			}
-			
-			theta += speed * dt / 1000;
-			theta %= 360;
-			
-			blast.css("transform", "rotate(" + theta + "deg)");
-		});
 		
 		var center = $("<div>")
 			.css({
@@ -69,17 +96,15 @@ $(function()
 			})
 			.appendTo(blast)
 		;
+		*/
 		
 		return blast;
 	}
 	
 	var bz              = $("#BlastZone") ;
-	var layerComplexity = 7               ;
+	var layerComplexity = 25              ;
 	
-	var size = 1;
-	var color = "red";
-	
-	MakeLayer( size,   layerComplexity, "black",  0                   ).appendTo(bz);
-	MakeLayer( 0.9 * size, layerComplexity, "yellow", layerComplexity     ).appendTo(bz);
-	MakeLayer( 0.8 * size, layerComplexity, "red",    layerComplexity * 2 ).appendTo(bz);
+	MakeLayer( 0.90, layerComplexity, "black",  "blastRotation-1", 0                   ).appendTo(bz);
+	MakeLayer( 0.85, layerComplexity, "yellow", "blastRotation-2", layerComplexity     ).appendTo(bz);
+	MakeLayer( 0.80, layerComplexity, "red",    "blastRotation-3", layerComplexity * 2 ).appendTo(bz);
 });

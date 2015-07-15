@@ -7,6 +7,14 @@
 		<script src="js/cust/Burst.js"></script>
 		
 		<script>
+			$(function()
+			{
+				Framed.FPSColor("white");
+				Framed.ShowFPS();
+			});
+		</script>
+		
+		<script>
 			(function()
 			{
 				// Ray creation variables
@@ -14,33 +22,32 @@
 				var rayRatio  = 0.75 ;
 				var rayLength = 1000 ;
 				
-				// Rotation variables
-				var theta       = 0 ;
-				var speed       = 1 ;
-				
 				// Bubble variables
-				var minSize        = 1 ;
-				var maxSize        = 3 ;
-				var bubbleCount    = 5 ;
-				var pullMultiplier = 1 ;
-				var minChangeFreq  = 1000;
-				var maxChangeFreq  = 3000;
+				var minSize        = 5    ;
+				var maxSize        = 15   ;
+				var bubbleCount    = 3    ;
+				var pullMultiplier = 1    ;
+				var minChangeFreq  = 1000 ;
+				var maxChangeFreq  = 3000 ;
+				var bubbleDragCoef = 0.5 ;
 				
 				var bgColor = "#71D9E8";
-				var bubbles;
+				var bubbles = $();
 				var blastZone;
+				var bubbleZone;
 				
 				function Bubble()
 				{
-					var p = Util.Vec.New(
+					var p = Util.Vec.New( // position
 						Math.random() * 100,
 						Math.random() * 100
 					);
 					
 					var size = (maxSize - minSize) * Math.random() + minSize;
 					
-					var el = MakeDiv()
+					var el = Util.MakeDiv()
 						.css({
+							position        : "absolute"             ,
 							left            : p.x + "%"              ,
 							top             : p.y + "%"              ,
 							width           : size + "em"            ,
@@ -49,14 +56,15 @@
 							borderRadius    : "50%"                  ,
 							transform       : "translate(-50%,-50%)"
 						})
-						.appendTo(blastZone)
+						.appendTo(bubbleZone)
 					;
 					
 					bubbles = bubbles.add(el);
 					
-					var t = Util.Vec.New();
+					var t = Util.Vec.New(); // target
+					var v = Util.Vec.New(); // velocity
 					
-					var v = Util.Vec.New();
+//					var v = Util.Vec.New();
 					
 					function newTarget()
 					{
@@ -68,22 +76,39 @@
 					
 					Framed.AddOnFrameHandler(function(dt)
 					{
-//						var vel = Util.Vec.Mlt(
+						var dir = Util.Vec.Sub(t, p);
+						
+						if(Util.Vec.Mag(dir) <= 10)
+						{
+							newTarget();
+							return;
+						}
+						
+						var a = Util.Vec.Mlt(dir, dt / (1000 * 100000));
+						v = Util.Vec.Add(v, Util.Vec.Sub(a, Util.Vec.Mlt(Util.Vec.Mlt(v, dt / 1000), bubbleDragCoef)));
+						
+						p = Util.Vec.Add(v, p);
+						
+						el.css({
+							left : p.x + "%" ,
+							top  : p.y + "%"
+						})
 					});
 				}
 				
 				// Set'm and forget'm variables
-				var period   = 2 * Math.PI / rays ;
-				var raySize  = period * rayRatio  ;
+				var period  = 2 * Math.PI / rays ;
+				var raySize = period * rayRatio  ;
 				
 				var c = { x : 1000, y : 1000 };
 				
 				$(function()
 				{
-					var canvas = $("#HalfToneBlast_BlastRays");
+					var canvas = $("#HalfToneBlast-BlastRays");
 					var ctx = canvas[0].getContext("2d");
 					
 					blastZone = $("#HalfToneBlast");
+					bubbleZone = $("#HalfToneBlast-Bubbles");
 					
 					ctx.fillStyle = bgColor;
 					ctx.beginPath();
@@ -109,39 +134,28 @@
 					ctx.closePath();
 					ctx.fill();
 					
-//					var origTrans = canvas.css("transform");
-//					var origTrans = getComputedStyle(canvas[0])['transform']; // there's a glitch with $.css and transform, this is a workaround
-					var origTrans = "translate(-50%, 50%)"; // workaround didn't work, hard coding it
-					
-					if(!origTrans || origTrans == "none")
-						origTrans = "";
-					
-					console.log(origTrans);
-					
-					Framed.AddOnFrameHandler(function(dt)
+					for(var b = 0; b < bubbleCount; b++)
 					{
-						theta += speed * dt / 1000;
-						theta %= 360;
-						
-						canvas.css({
-							transform : origTrans + " rotate(" + theta + "deg)"
-						});
-					});
-					
-					
+						new Bubble();
+					}
 				});
 			})();
 		</script>
-		
 		<link href="css/style.css" rel="stylesheet" type="text/css">
 	</head>
 	<body>
 		<div id="HalfToneBlast">
-			<canvas id="HalfToneBlast_BlastRays" width="2000" height="2000"></canvas>
-			<div id="HalfToneBlast_Center"></div>
+			<div id="HalfToneBlast-Bubbles"></div>
+			<div id="HalfToneBlast-Center">
+				<canvas id="HalfToneBlast-BlastRays" width="2000" height="2000"></canvas>
+				<div id="HalfToneBlast-Cap"></div>
+			</div>
 		</div>
 		<div id="BlastZone"></div>
 		<div class="bubble" style="left:10em;top:20em;">See spot.  See spot run.  Run spot run.</div>
-		<div class="bubble bubble_left" style="left:2em;top:5em;">Speach nub on the left.</div>
+		<div class="bubble bubble-left" style="left:2em;top:5em;">Speach nub on the left.</div>
+		<div class="comic-page">
+			<div class="comic-frame"><div class="comic-frame-content"></div></div><div class="comic-frame comic-frame-twoThirds"><div class="comic-frame-content"></div></div><div class="comic-frame"><div class="comic-frame-content"></div></div><div class="comic-frame"><div class="comic-frame-content"></div></div><div class="comic-frame"><div class="comic-frame-content"></div></div>
+		</div>
 	</body>
 </html>
