@@ -1,0 +1,147 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<script src="js/lib/jquery.js"></script>
+		<script src="js/cust/Utility.js"></script>
+		<script src="js/cust/Framed.js"></script>
+		<script src="js/cust/Burst.js"></script>
+		
+		<script>
+			(function()
+			{
+				// Ray creation variables
+				var rays      = 20   ;
+				var rayRatio  = 0.75 ;
+				var rayLength = 1000 ;
+				
+				// Rotation variables
+				var theta       = 0 ;
+				var speed       = 1 ;
+				
+				// Bubble variables
+				var minSize        = 1 ;
+				var maxSize        = 3 ;
+				var bubbleCount    = 5 ;
+				var pullMultiplier = 1 ;
+				var minChangeFreq  = 1000;
+				var maxChangeFreq  = 3000;
+				
+				var bgColor = "#71D9E8";
+				var bubbles;
+				var blastZone;
+				
+				function Bubble()
+				{
+					var p = Util.Vec.New(
+						Math.random() * 100,
+						Math.random() * 100
+					);
+					
+					var size = (maxSize - minSize) * Math.random() + minSize;
+					
+					var el = MakeDiv()
+						.css({
+							left            : p.x + "%"              ,
+							top             : p.y + "%"              ,
+							width           : size + "em"            ,
+							height          : size + "em"            ,
+							backgroundColor : bgColor                ,
+							borderRadius    : "50%"                  ,
+							transform       : "translate(-50%,-50%)"
+						})
+						.appendTo(blastZone)
+					;
+					
+					bubbles = bubbles.add(el);
+					
+					var t = Util.Vec.New();
+					
+					var v = Util.Vec.New();
+					
+					function newTarget()
+					{
+						t.x = Math.random() * 100;
+						t.y = Math.random() * 100;
+					}
+					
+					newTarget();
+					
+					Framed.AddOnFrameHandler(function(dt)
+					{
+//						var vel = Util.Vec.Mlt(
+					});
+				}
+				
+				// Set'm and forget'm variables
+				var period   = 2 * Math.PI / rays ;
+				var raySize  = period * rayRatio  ;
+				
+				var c = { x : 1000, y : 1000 };
+				
+				$(function()
+				{
+					var canvas = $("#HalfToneBlast_BlastRays");
+					var ctx = canvas[0].getContext("2d");
+					
+					blastZone = $("#HalfToneBlast");
+					
+					ctx.fillStyle = bgColor;
+					ctx.beginPath();
+					ctx.moveTo(c.x, c.y);
+					
+					for(var theta = 0; theta < 2 * Math.PI; theta += period)
+					{
+						var p1 = {
+							x : rayLength * Math.sin(theta),
+							y : rayLength * Math.cos(theta)
+						};
+						
+						var p2 = {
+							x : rayLength * Math.sin(theta + raySize),
+							y : rayLength * Math.cos(theta + raySize)
+						};
+						
+						ctx.lineTo( p1.x + c.x, p1.y + c.y );
+						ctx.lineTo( p2.x + c.x, p2.y + c.y );
+						ctx.lineTo( c.x,        c.y        );
+					}
+					
+					ctx.closePath();
+					ctx.fill();
+					
+//					var origTrans = canvas.css("transform");
+//					var origTrans = getComputedStyle(canvas[0])['transform']; // there's a glitch with $.css and transform, this is a workaround
+					var origTrans = "translate(-50%, 50%)"; // workaround didn't work, hard coding it
+					
+					if(!origTrans || origTrans == "none")
+						origTrans = "";
+					
+					console.log(origTrans);
+					
+					Framed.AddOnFrameHandler(function(dt)
+					{
+						theta += speed * dt / 1000;
+						theta %= 360;
+						
+						canvas.css({
+							transform : origTrans + " rotate(" + theta + "deg)"
+						});
+					});
+					
+					
+				});
+			})();
+		</script>
+		
+		<link href="css/style.css" rel="stylesheet" type="text/css">
+	</head>
+	<body>
+		<div id="HalfToneBlast">
+			<canvas id="HalfToneBlast_BlastRays" width="2000" height="2000"></canvas>
+			<div id="HalfToneBlast_Center"></div>
+		</div>
+		<div id="BlastZone"></div>
+		<div class="bubble" style="left:10em;top:20em;">See spot.  See spot run.  Run spot run.</div>
+		<div class="bubble bubble_left" style="left:2em;top:5em;">Speach nub on the left.</div>
+	</body>
+</html>
