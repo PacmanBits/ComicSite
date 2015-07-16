@@ -35,11 +35,11 @@ $(function()
 			y : canvSize / 2
 		}
 		
-		ctx.fillStyle     = color         ;
-		ctx.shadowColor   = '#000'        ;
-		ctx.shadowBlur    = canvSize / 20 ;
-		ctx.shadowOffsetX = 0             ;
-		ctx.shadowOffsetY = 0             ;
+		ctx.fillStyle     = color             ;
+		ctx.shadowColor   = 'rgba(0,0,0,0.8)' ;
+		ctx.shadowBlur    = canvSize / 30     ;
+		ctx.shadowOffsetX = 0                 ;
+		ctx.shadowOffsetY = 0                 ;
 		
 		ctx.beginPath();
 		ctx.moveTo(inR + c.x, 0 + c.y);

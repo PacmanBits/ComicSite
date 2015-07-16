@@ -207,6 +207,37 @@ body
 	border-radius:              0.2em;
 }
 
+.comic-actionText
+{
+	position:                   absolute;
+	font-size:                  0.7em;
+	font-weight:                bold;
+	text-transform:             uppercase;
+	font-style:                 italic;
+	padding:                    1em 2em;
+	margin:                     0.5em;
+	font-family:                "Comic Sans MS";
+	max-width:                  66%;
+	background-color:           #f5e66c;
+	border:                     0.2em solid black;
+}
+
+.comic-actionText-topLeft     { top:    0; left:  0; }
+.comic-actionText-topRight    { top:    0; right: 0; }
+.comic-actionText-bottomLeft  { bottom: 0; left:  0; }
+.comic-actionText-bottomRight { bottom: 0; right: 0; }
+
+.comic-actionText-snapToFrame
+{
+	margin:                     0;
+	border-style:               none solid solid none;
+}
+
+.comic-actionText-snapToFrame.comic-actionText-topLeft     { border-style: none  solid solid none  }
+.comic-actionText-snapToFrame.comic-actionText-topRight    { border-style: none  none  solid solid }
+.comic-actionText-snapToFrame.comic-actionText-bottomLeft  { border-style: solid solid none  none  }
+.comic-actionText-snapToFrame.comic-actionText-bottomRight { border-style: solid none  none  solid }
+
 @media (max-width: 1000px)
 {
 	.comic-page
