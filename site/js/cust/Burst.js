@@ -6,13 +6,9 @@ $(function()
 	{
 		var outR   = r * canvSize / 2                   ;
 		var polySide = 2 * outR * Math.sin(Math.PI / n) ;
-		var inR    = outR - polySide / 2                ; // TODO: the outR:inR ratio isn't correct.  The spikes should have a 90 degree angle in all cases
+		var inR    = outR - polySide / 3                ; // TODO: the outR:inR ratio isn't correct.  The spikes should have a 90 degree angle in all cases
 		var period = 2 * Math.PI / n                    ;
 		var point  = period / 2                         ;
-		
-		
-		
-		
 		
 		
 		
@@ -102,9 +98,9 @@ $(function()
 	}
 	
 	var bz              = $("#BlastZone") ;
-	var layerComplexity = 25              ;
+	var layerComplexity = 10              ;
 	
-	MakeLayer( 0.90, layerComplexity, "black",  "blastRotation-1", 0                   ).appendTo(bz);
-	MakeLayer( 0.85, layerComplexity, "yellow", "blastRotation-2", layerComplexity     ).appendTo(bz);
-	MakeLayer( 0.80, layerComplexity, "red",    "blastRotation-3", layerComplexity * 2 ).appendTo(bz);
+	MakeLayer( 0.9, layerComplexity, "black",  "blastRotation-1", 0                   ).appendTo(bz);
+	MakeLayer( 0.8, layerComplexity, "yellow", "blastRotation-2", layerComplexity     ).appendTo(bz);
+	MakeLayer( 0.7, layerComplexity, "red",    "blastRotation-3", layerComplexity * 2 ).appendTo(bz);
 });

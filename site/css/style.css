@@ -171,7 +171,7 @@ body
 	position:                   fixed;
 	bottom:                     0.1em;
 	left:                       0.3em;
-	font-size:                  40em;
+	font-size:                  30em;
 }
 
 .comic-page
@@ -221,6 +221,7 @@ body
 	height:                     100%;
 	margin:                     -0.1em 0 0 -0.1em;
 	border-radius:              0.2em;
+	overflow:                   hidden;
 }
 
 .comic-actionText
